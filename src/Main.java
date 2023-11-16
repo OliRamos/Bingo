@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -14,12 +15,11 @@ public class Main {
         System.out.print("Digite os nomes aqui: -> ");
         String entradaNomes = sc.nextLine();
 
-        String[] nomesDosJogadores = entradaNomes.split(",");
+        String[] nomesDosJogadores = entradaNomes.split(", ");
+        String[][] cartelasJogadores = new String[nomesDosJogadores.length][6];
+        int qtdNumerosCartela = 5;
 
-        for (int i = 0; i < nomesDosJogadores.length; i++) {
-            System.out.println("Nome do Jogador (a): " + nomesDosJogadores[i]);
 
-        }
 
 
 
@@ -27,4 +27,15 @@ public class Main {
 
 
     }
+
+    public static int[] sorteiaNumerosCartela(int qtdNumerosCartela){
+        int[] numerosSorteados = new int[qtdNumerosCartela];
+        for (int i = 0; i < qtdNumerosCartela; i++) {
+            numerosSorteados[i] = (int) (Math.random() * 60) + 1;
+        }
+        return numerosSorteados;
+    }
+
+
 }
+
