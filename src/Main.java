@@ -9,7 +9,6 @@ public class Main {
         System.out.println("---------------------------------------- ");
         System.out.println(" B I N G O  D O S  'J U N I N'  5 0 + ");
         System.out.println("---------------------------------------- \n");
-
         System.out.println("Entre com os nomes dos participantes separadas por vírgula ','.");
         System.out.println("Exemplo: Fulano, Cicrana, Beltrana:");
         System.out.print("Digite os nomes aqui: -> ");
@@ -19,23 +18,28 @@ public class Main {
         String[][] cartelasJogadores = new String[nomesDosJogadores.length][6];
         int qtdNumerosCartela = 5;
 
-
-
-
-
-
+        int[] cartela = sorteiaNumerosCartela(qtdNumerosCartela);
+        System.out.println("numeros sorteados = " + Arrays.toString(cartela));
 
 
     }
 
-    public static int[] sorteiaNumerosCartela(int qtdNumerosCartela){
+    public static int[] sorteiaNumerosCartela(int qtdNumerosCartela) {
         int[] numerosSorteados = new int[qtdNumerosCartela];
+        boolean[] verificaRepitidos = new boolean[61];
+
         for (int i = 0; i < qtdNumerosCartela; i++) {
-            numerosSorteados[i] = (int) (Math.random() * 60) + 1;
+            do {
+                numerosSorteados[i] = (int) (Math.random() * 60) + 1;
+            }
+            while (verificaRepitidos[numerosSorteados[i]]);
+
         }
         return numerosSorteados;
     }
 
-
 }
+
+
+
 
