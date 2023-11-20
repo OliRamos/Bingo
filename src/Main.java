@@ -8,7 +8,7 @@ public class Main {
         System.out.println("---------------------------------------- ");
         System.out.println(" B I N G O  D O S  'J U N I N'  5 0 + ");
         System.out.println("---------------------------------------- \n");
-        System.out.println("Entre com os nomes dos participantes separadas por vírgula ','.");
+        System.out.println("Entre com os nomes dos participantes separados por hífen ','.");
         System.out.println("Exemplo: Fulano-Cicrana-Beltrana");
         System.out.print("Digite os nomes aqui: >> ");
         String entradaNomes = sc.nextLine();
@@ -16,6 +16,38 @@ public class Main {
         String[] nomesDosJogadores = entradaNomes.split("-");
         int qtdNumerosCartela = 5;
 
+        gerarNumerosCartela(qtdNumerosCartela);
+        String[][] cartelasJogadores =
+                gerarCartelasDosJogadores(nomesDosJogadores, qtdNumerosCartela);
+
+        for (int i = 0; i < nomesDosJogadores.length; i++) {
+            System.out.println();
+            System.out.printf("%-20s", nomesDosJogadores[i]);
+            for (int j = 0; j < qtdNumerosCartela; j++) {
+                System.out.printf("%-5s", cartelasJogadores[i][j]);
+
+
+            }
+
+        }
+
+//        for(int i = 0;i < nomesDosJogadores.length;i++) {
+//            System.out.printf("%-20s", nomesDosJogadores[i]);
+//            for (int j = 0; j < qtdNumerosCartela; j++) {
+//                System.out.print();
+//                if (j < qtdNumerosCartela){
+//                    System.out.print(" - " );
+//                }
+//            }
+//            System.out.println();
+//        }
+
+        //System.out.println("numeros sorteados = " + Arrays.toString(cartela));
+
+    }
+
+    private static String[][] gerarCartelasDosJogadores
+            (String[] nomesDosJogadores, int qtdNumerosCartela) {
         String[][] cartelasJogadores = new String[nomesDosJogadores.length][qtdNumerosCartela];
         for (int i = 0; i < nomesDosJogadores.length; i++) {
             cartelasJogadores[i][0] = nomesDosJogadores[i];
@@ -24,16 +56,9 @@ public class Main {
                    cartelasJogadores[i][j] = Integer.toString(cartela[j]);
             }
         }
-        for (String[] cartela : cartelasJogadores){
-            System.out.println(Arrays.toString(cartela));
-        }
-
-
-        int[] cartela = gerarNumerosCartela(qtdNumerosCartela);
-        System.out.println("numeros sorteados = " + Arrays.toString(cartela));
+        return cartelasJogadores;
 
     }
-
 
     public static int[] gerarNumerosCartela(int qtdNumerosCartela) {
         int[] numerosGerados = new int[qtdNumerosCartela];
