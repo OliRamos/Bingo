@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -8,42 +7,86 @@ public class Main {
         System.out.println("---------------------------------------- ");
         System.out.println(" B I N G O  D O S  'J U N I N'  5 0 + ");
         System.out.println("---------------------------------------- \n");
-        System.out.println("Entre com os nomes dos participantes separados por hífen ','.");
-        System.out.println("Exemplo: Fulano-Cicrana-Beltrana");
-        System.out.print("Digite os nomes aqui: >> ");
-        String entradaNomes = sc.nextLine();
 
-        String[] nomesDosJogadores = entradaNomes.split("-");
+        String opcaoInicio;
+
+        do {
+            System.out.println(" - Menu Inicial - ");
+            System.out.println("Digite a opção desejada:");
+            System.out.println(" 1 para automático | 2 para manual | 3 para sair => ");
+            opcaoInicio = sc.next();
+
+            if (opcaoInicio.equals("1")) {
+                System.out.println("Opção escolhida: automática");
+                jogarJogoAutomatico(sc);
+            } else if (opcaoInicio.equals("2")) {
+                System.out.println("Opção escolhida: manual");
+                // executarJogoManual;
+            } else if (opcaoInicio.equals("3")) {
+                System.out.println("Opção escolhida: sair");
+                System.exit(0);
+            } else {
+                System.out.println("Opção inválida. Escolha entre 1, 2 ou 3.");
+            }
+
+        } while (!opcaoInicio.equals("1") && !opcaoInicio.equals("2") && !opcaoInicio.equals("3"));
+
+
+
+
+
+//        String[] nomesDosJogadores = pegarNomesJogadores(sc);
+//        int qtdNumerosCartela = 5;
+
+//        gerarNumerosCartela(qtdNumerosCartela);
+//        String[][] cartelasJogadores =
+//                gerarCartelasDosJogadores(nomesDosJogadores, qtdNumerosCartela);
+//
+//        imprimirCartelasSorteadas(nomesDosJogadores,
+//                qtdNumerosCartela, cartelasJogadores);
+
+
+        //System.out.println("numeros sorteados = " + Arrays.toString(cartela));
+
+    }
+
+    private static void jogarJogoAutomatico(Scanner sc) {
+        sc.nextLine();
+        String[] nomesDosJogadores = pegarNomesJogadores(sc);
         int qtdNumerosCartela = 5;
 
         gerarNumerosCartela(qtdNumerosCartela);
         String[][] cartelasJogadores =
                 gerarCartelasDosJogadores(nomesDosJogadores, qtdNumerosCartela);
 
+        imprimirCartelasSorteadas(nomesDosJogadores,
+                qtdNumerosCartela, cartelasJogadores);
+    }
+
+    private static String[] pegarNomesJogadores(Scanner sc) {
+        System.out.println("Entre com os nomes dos participantes separados por hífen ','.");
+        System.out.println("Exemplo: Fulano-Cicrana-Beltrana");
+        System.out.print("Digite os nomes aqui: >> ");
+        String entradaNomes = sc.nextLine();
+        String[] nomesDosJogadores = entradaNomes.split("-");
+        return nomesDosJogadores;
+    }
+
+
+    private static void imprimirCartelasSorteadas(String[] nomesDosJogadores,
+                                                  int qtdNumerosCartela,
+                                                  String[][] cartelasJogadores) {
         for (int i = 0; i < nomesDosJogadores.length; i++) {
             System.out.println();
-            System.out.printf("%-20s", nomesDosJogadores[i]);
+            System.out.printf("%s = {", nomesDosJogadores[i]);
             for (int j = 0; j < qtdNumerosCartela; j++) {
-                System.out.printf("%-5s", cartelasJogadores[i][j]);
-
-
+                System.out.printf("%s", cartelasJogadores[i][j]);
+                if(j < qtdNumerosCartela -1){
+                    System.out.print(", ");
+                }
             }
-
+            System.out.print("}");
         }
-
-//        for(int i = 0;i < nomesDosJogadores.length;i++) {
-//            System.out.printf("%-20s", nomesDosJogadores[i]);
-//            for (int j = 0; j < qtdNumerosCartela; j++) {
-//                System.out.print();
-//                if (j < qtdNumerosCartela){
-//                    System.out.print(" - " );
-//                }
-//            }
-//            System.out.println();
-//        }
-
-        //System.out.println("numeros sorteados = " + Arrays.toString(cartela));
-
     }
 
     private static String[][] gerarCartelasDosJogadores
