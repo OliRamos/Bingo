@@ -15,6 +15,10 @@ public class Main {
         String entradaNomes = sc.nextLine();
         String[] nomesDosJogadores = pegarNomesJogadores(entradaNomes);
         int qtdNumerosCartela = 5;
+        int maxRodadas = 12;
+        int[][] acertosJogadores = new int[nomesDosJogadores.length][maxRodadas];
+
+
         String opcaoInicio;
 
         do {
@@ -46,29 +50,43 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         int rodadas = 0;
         String[][] cartelasJogadores = gerarCartelasDosJogadores(nomesDosJogadores, qtdNumerosCartela);
-        imprimirCartelasSorteadas(nomesDosJogadores, qtdNumerosCartela, cartelasJogadores);
+        int[][] cartelaDePontos = inicializarCartelaDePontos(nomesDosJogadores);
+        int[] numerosDisponiveis = gerarNumerosDisponiveis();
         int[] numerosSorteadosAcumulativo = new int[0];
 
         do {
             rodadas++;
             System.out.println("\n--- Rodada " + rodadas + " ---");
-            int[] numerosSorteadosRodada = sortearNumeros(qtdNumerosCartela);
+            int[] numerosSorteadosRodada = sortearNumeros(qtdNumerosCartela, numerosDisponiveis);
             numerosSorteadosAcumulativo = concatenarArrays(numerosSorteadosAcumulativo, numerosSorteadosRodada);
             imprimirListaNumerosSorteados(numerosSorteadosAcumulativo);
             imprimirCartelasSorteadas(nomesDosJogadores, qtdNumerosCartela, cartelasJogadores);
 
-            // Verifica se o usuário deseja continuar para a próxima rodada
+            for (int i = 0; i < nomesDosJogadores.length; i++) {
+                int acertos = contarAcertos(numerosSorteadosAcumulativo, cartelasJogadores[i]);
+                atualizarCartelaDePontos(cartelaDePontos[i], acertos, rodadas);
+                int totalPontos = somarPontosJogador(cartelaDePontos[i], rodadas);
+                System.out.println(nomesDosJogadores[i] + " total de pontos: " + totalPontos);
+            }
+
             System.out.println("\nDeseja jogar a próxima rodada? (Digite 's' para sim, 'n' para não): ");
             String escolha = sc.next().toLowerCase();
 
             if (escolha.equals("n")) {
                 System.out.println("Jogo encerrado. Obrigado por jogar!");
+
+                // Exibir o total de pontos de cada jogador
+                for (int i = 0; i < nomesDosJogadores.length; i++) {
+                    int totalPontos = somarPontosJogador(cartelaDePontos[i]);
+                    System.out.println(nomesDosJogadores[i] + " total de pontos: " + totalPontos);
+                }
                 System.exit(0);
             }
 
-        } while (true); // Modifique conforme necessário para encerrar o jogo
-
+        } while (true);
     }
+
+
 
 
 
@@ -91,6 +109,7 @@ public class Main {
                 }
             }
             System.out.print("}");
+
         }
     }
 
@@ -122,19 +141,76 @@ public class Main {
         return numerosSorteadosCartelas;
     }
 
-    public static int[] sortearNumeros(int qtdNumerosCartela) {
+    public static int[] sortearNumeros(int qtdNumerosCartela, int[] numerosDisponiveis) {
         int[] numerosSorteados = new int[qtdNumerosCartela];
-        for(int i = 0; i < qtdNumerosCartela; i++){
-            while (true){
-                int numeroTeste = (int) (Math.random() * 60 + 1);
-                if (verificarRepitidos(numeroTeste,numerosSorteados)){
-                    numerosSorteados[i] = numeroTeste;
+
+         for (int i = 0; i < qtdNumerosCartela; i++) {
+            int indiceSorteado;
+            do {
+                indiceSorteado = (int) (Math.random() * numerosDisponiveis.length);
+            } while (numerosDisponiveis[indiceSorteado] == 0);
+
+            numerosSorteados[i] = numerosDisponiveis[indiceSorteado];
+            numerosDisponiveis[indiceSorteado] = 0; // Marcar o valor como utilizado
+        }
+
+        return numerosSorteados;
+    }
+
+    public static int[][] inicializarCartelaDePontos(String[] nomesDosJogadores) {
+        int[][] cartelaDePontos = new int[nomesDosJogadores.length][];
+        for (int i = 0; i < nomesDosJogadores.length; i++) {
+            cartelaDePontos[i] = new int[5]; // Inicializa com 5 posições
+        }
+        return cartelaDePontos;
+    }
+
+    public static void atualizarCartelaDePontos(int[] cartelaDePontos, int acertos, int rodada) {
+        if (acertos > 0 && acertos <= 5) {
+            cartelaDePontos[acertos - 1] += 1; // Substitui o 0 pelo valor 1
+        }
+    }
+
+    public static int somarPontosJogador(int[] cartelaDePontos) {
+        int soma = 0;
+        for (int valor : cartelaDePontos) {
+            soma += valor;
+        }
+        return soma;
+    }
+
+
+
+    public static int contarAcertos(int[] numerosSorteados, String[] cartela) {
+        int acertos = 0;
+        for (int numero : numerosSorteados) {
+            for (String numeroCartela : cartela) {
+                if (numero == Integer.parseInt(numeroCartela)) {
+                    acertos++;
                     break;
                 }
             }
         }
-        return numerosSorteados;
+        return acertos;
     }
+
+    public static int somarPontosJogador(int[] array, int rodadas) {
+        int soma = 0;
+        for (int r = 0; r < rodadas; r++) {
+            soma += array[r];
+        }
+        return soma;
+    }
+
+
+    public static int[] gerarNumerosDisponiveis() {
+        int[] numerosDisponiveis = new int[60];
+        for (int i = 0; i < numerosDisponiveis.length; i++) {
+            numerosDisponiveis[i] = i + 1;
+        }
+        return numerosDisponiveis;
+    }
+
 
     public static boolean verificarRepitidosCartela(int numeroTeste, int[] numerosSorteados) {
         for (int i = 0; i < numerosSorteados.length; i++) {
@@ -145,14 +221,6 @@ public class Main {
         return true;
     }
 
-    public static boolean verificarRepitidos(int numeroTeste, int[] numerosSorteados) {
-        for (int i = 0; i < numerosSorteados.length; i++) {
-            if (numerosSorteados[i] == numeroTeste) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public static void imprimirListaNumerosSorteados(int[] numerosSorteados) {
         System.out.print("Números sorteados: ");
@@ -167,6 +235,15 @@ public class Main {
         System.arraycopy(array1, 0, resultado, 0, array1.length);
         System.arraycopy(array2, 0, resultado, array1.length, array2.length);
         return resultado;
+    }
+
+    public static void verificarAcertos(int[] numerosSorteados,
+                                        String[][] cartelasJogadores,
+                                        String[] nomesDosJogadores) {
+        for (int i = 0; i < nomesDosJogadores.length; i++) {
+            int acertos = contarAcertos(numerosSorteados, cartelasJogadores[i]);
+            System.out.printf("\n%s acertou %d números!\n", nomesDosJogadores[i], acertos);
+        }
     }
 
 }
